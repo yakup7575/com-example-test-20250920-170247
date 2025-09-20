@@ -299,6 +299,11 @@ YAML;
     {
         $projectPath = storage_path('app/flutter-projects/' . $app->package_name);
         
+        // Eski git klasörünü temizle
+        if (file_exists($projectPath . '/.git')) {
+            $this->deleteDirectory($projectPath . '/.git');
+        }
+        
         // Git komutlarını çalıştır
         $appName = str_replace("'", "\'", $app->name);
         $commands = [
@@ -317,6 +322,32 @@ YAML;
                 throw new \Exception("Git komutu başarısız: {$command}");
             }
         }
+    }
+
+    /**
+     * Dizini tamamen sil
+     */
+    protected function deleteDirectory($dir)
+    {
+        if (!file_exists($dir)) {
+            return true;
+        }
+
+        if (!is_dir($dir)) {
+            return unlink($dir);
+        }
+
+        foreach (scandir($dir) as $item) {
+            if ($item == '.' || $item == '..') {
+                continue;
+            }
+
+            if (!$this->deleteDirectory($dir . DIRECTORY_SEPARATOR . $item)) {
+                return false;
+            }
+        }
+
+        return rmdir($dir);
     }
 
     /**
