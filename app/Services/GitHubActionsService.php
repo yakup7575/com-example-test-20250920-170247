@@ -312,13 +312,15 @@ YAML;
             "git add .",
             "git commit -m \"Initial commit: {$appName} Flutter app\"",
             "git branch -M main",
+            "git remote remove origin 2>nul || echo 'No remote to remove'",
             "git remote add origin https://{$this->githubToken}@github.com/{$this->githubUsername}/{$repoName}.git",
             "git push -u origin main --force"
         ];
 
         foreach ($commands as $command) {
             exec($command, $output, $returnCode);
-            if ($returnCode !== 0) {
+            // Remote remove komutu için hata kodunu yoksay
+            if ($returnCode !== 0 && !str_contains($command, 'remote remove')) {
                 throw new \Exception("Git komutu başarısız: {$command}");
             }
         }
