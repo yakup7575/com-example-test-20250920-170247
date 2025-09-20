@@ -308,7 +308,7 @@ YAML;
             "git commit -m \"Initial commit: {$appName} Flutter app\"",
             "git branch -M main",
             "git remote add origin https://{$this->githubToken}@github.com/{$this->githubUsername}/{$repoName}.git",
-            "git push -u origin main"
+            "git push -u origin main --force"
         ];
 
         foreach ($commands as $command) {
